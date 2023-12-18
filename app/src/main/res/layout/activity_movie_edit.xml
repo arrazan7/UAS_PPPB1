@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MovieEditActivity"
+    android:background="@color/color1">
+
+    <TextView
+        android:id="@+id/tv_editmovie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/color2"
+        android:text="Edit Movie"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppins_semi_bold" />
+
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_editmovie"
+        android:layout_marginLeft="15dp"
+        android:src="@drawable/baseline_arrow_back_ios_new_24" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_editmovie"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:trackThickness="8dp"
+        app:trackColor="@color/white"
+        app:indicatorColor="#7863BE"
+        android:indeterminate="true"
+        android:visibility="gone"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_editmovie"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/edit_poster_movie"
+                android:layout_width="200dp"
+                android:layout_height="260dp"
+                android:layout_marginTop="50dp"
+                android:padding="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/upload_image"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/RoundedSquare"
+                app:strokeColor="@color/color3"
+                app:strokeWidth="4dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/field_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/edit_poster_movie"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:hint="Movie Title"
+                android:textColorHint="@color/white"
+                app:hintTextColor="@color/white"
+                app:boxStrokeColor="@color/mtrl_textinput_default_box_stroke_color" >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_movie_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/poppins_regular" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/field_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/field_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:hint="Movie Director"
+                android:textColorHint="@color/white"
+                app:hintTextColor="@color/white"
+                app:boxStrokeColor="@color/mtrl_textinput_default_box_stroke_color">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_movie_dir"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/poppins_regular"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/field_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/field_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:hint="Story Line"
+                android:textColorHint="@color/white"
+                app:hintTextColor="@color/white"
+                app:boxStrokeColor="@color/mtrl_textinput_default_box_stroke_color">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_story_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/poppins_regular"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tv_genre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/field_3"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Genre"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:fontFamily="@font/poppins_semi_bold" />
+
+            <CheckBox
+                android:id="@+id/g_horror"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_genre"
+                app:layout_constraintEnd_toStartOf="@id/g_thriller"
+                android:text="Horror"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_thriller"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                app:layout_constraintStart_toEndOf="@id/g_horror"
+                app:layout_constraintTop_toBottomOf="@id/tv_genre"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Thriller"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_animasi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/g_horror"
+                app:layout_constraintEnd_toStartOf="@id/g_dokumenter"
+                android:text="Animasi"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_dokumenter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                app:layout_constraintStart_toEndOf="@id/g_animasi"
+                app:layout_constraintTop_toBottomOf="@id/g_thriller"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Dokumenter"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_komedi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/g_animasi"
+                app:layout_constraintEnd_toStartOf="@id/g_aksi"
+                android:text="Komedi"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_aksi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                app:layout_constraintStart_toEndOf="@id/g_komedi"
+                app:layout_constraintTop_toBottomOf="@id/g_dokumenter"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Aksi"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_drama"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/g_komedi"
+                app:layout_constraintEnd_toStartOf="@id/g_romantis"
+                android:text="Drama"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_romantis"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                app:layout_constraintStart_toEndOf="@id/g_drama"
+                app:layout_constraintTop_toBottomOf="@id/g_aksi"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Romantis"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <TextView
+                android:id="@+id/tv_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/g_drama"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Rating"
+                android:textSize="25sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins_semi_bold"/>
+
+            <ImageView
+                android:id="@+id/dislike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/field_1"
+                app:layout_constraintTop_toTopOf="@id/rating_slider"
+                app:layout_constraintEnd_toStartOf="@id/rating_slider"
+                app:layout_constraintBottom_toBottomOf="@id/rating_slider"
+                android:src="@drawable/baseline_thumb_down_alt_24" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/rating_slider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/dislike"
+                app:layout_constraintTop_toBottomOf="@id/tv_rating"
+                app:layout_constraintEnd_toStartOf="@id/like"
+                android:valueFrom="0.0"
+                android:valueTo="10.0"
+                android:stepSize="1.0"
+                app:trackColorActive="@color/color3"
+                app:trackColorInactive="@color/white"
+                app:thumbColor="@color/color3"
+                app:haloColor="#80BE3144"
+                android:importantForAccessibility="no"/>
+
+            <ImageView
+                android:id="@+id/like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/rating_slider"
+                app:layout_constraintTop_toTopOf="@id/rating_slider"
+                app:layout_constraintEnd_toEndOf="@id/field_1"
+                app:layout_constraintBottom_toBottomOf="@id/rating_slider"
+                android:src="@drawable/baseline_thumb_up_alt_24" />
+
+            <Button
+                android:id="@+id/btn_submit_movie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rating_slider"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Submit"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_bold"
+                app:cornerRadius="15dp"
+                android:paddingTop="8dp"
+                android:backgroundTint="@color/blue"/>
+
+            <Button
+                android:id="@+id/btn_delete_movie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_submit_movie"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Delete"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_bold"
+                app:cornerRadius="15dp"
+                android:paddingTop="8dp"
+                android:backgroundTint="@color/red"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_delete_movie"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
