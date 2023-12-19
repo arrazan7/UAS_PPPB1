@@ -278,13 +278,103 @@
                 app:buttonTint="@color/color3"
                 app:buttonIconTint="@color/white"/>
 
+            <CheckBox
+                android:id="@+id/g_misteri"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/g_drama"
+                app:layout_constraintEnd_toStartOf="@id/g_romantis"
+                android:text="Misteri"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_keluarga"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                app:layout_constraintStart_toEndOf="@id/g_drama"
+                app:layout_constraintTop_toBottomOf="@id/g_romantis"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Keluarga"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_fiksiilmiah"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/g_misteri"
+                app:layout_constraintEnd_toStartOf="@id/g_romantis"
+                android:text="Fiksi Ilmiah"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_petualangan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                app:layout_constraintStart_toEndOf="@id/g_drama"
+                app:layout_constraintTop_toBottomOf="@id/g_keluarga"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Petualangan"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_fantasi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/g_fiksiilmiah"
+                app:layout_constraintEnd_toStartOf="@id/g_romantis"
+                android:text="Fantasi"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_musikal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                app:layout_constraintStart_toEndOf="@id/g_drama"
+                app:layout_constraintTop_toBottomOf="@id/g_petualangan"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Musikal"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
             <TextView
                 android:id="@+id/tv_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/g_drama"
+                app:layout_constraintTop_toBottomOf="@id/g_fantasi"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="Rating"
                 android:textSize="25sp"

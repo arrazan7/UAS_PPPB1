@@ -72,6 +72,9 @@ class HomeAdminFragment : Fragment() {
         const val EXTRA_NAMA = "extra_nama"
         const val EXTRA_DIREKTOR = "extra_direktur"
         const val EXTRA_STORY = "ektra_story"
+        const val EXTRA_RATING = "ektra_rating"
+        const val EXTRA_GENRE = "extra_genre"
+
     }
 
     override fun onAttach(context: Context) {
@@ -103,6 +106,8 @@ class HomeAdminFragment : Fragment() {
                     putExtra(EXTRA_NAMA, it.nama)
                     putExtra(EXTRA_DIREKTOR, it.direktor)
                     putExtra(EXTRA_STORY, it.storyline)
+                    putExtra(EXTRA_RATING, it.rating)
+                    putExtra(EXTRA_GENRE, it.genre.toTypedArray())
                 })
             }
         }
@@ -126,7 +131,7 @@ class HomeAdminFragment : Fragment() {
                     document.getString("nama") ?: "",
                     document.getLong("rating")?.toInt() ?: 0,
                     document.getString("direktor") ?: "",
-                    document.getString("genre") ?: "",
+                    document.get("genre") as List<String>? ?: listOf(),
                     document.getString("storyline") ?: ""
                 )
                 movieList.add(movieData)

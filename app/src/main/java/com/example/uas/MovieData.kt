@@ -9,7 +9,7 @@ data class MovieData(
     val nama: String,
     val rating: Int?,
     val direktor: String,
-    val genre: String, // Bukan String tapi arrayList karena ada beberapa genre
+    val genre: List<String>,
     val storyline: String
     ) : Parcelable {
         constructor(parcel: Parcel) : this(
@@ -18,7 +18,7 @@ data class MovieData(
             parcel.readString()!!,
             parcel.readInt(),
             parcel.readString()!!,
-            parcel.readString()!!,
+            parcel.createStringArrayList()!!,
             parcel.readString()!!
         )
 
@@ -28,7 +28,7 @@ data class MovieData(
             parcel.writeString(nama)
             parcel.writeInt(rating!!)
             parcel.writeString(direktor)
-            parcel.writeString(genre)
+            parcel.writeStringList(genre)
             parcel.writeString(storyline)
         }
 

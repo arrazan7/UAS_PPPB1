@@ -70,7 +70,9 @@ class HomeFragment : Fragment() {
         const val EXTRA_IMAGE = "extra_image"
         const val EXTRA_NAMA = "extra_nama"
         const val EXTRA_DIREKTOR = "extra_direktur"
+        const val EXTRA_RATING = "extra_rating"
         const val EXTRA_STORY = "ektra_story"
+        const val EXTRA_GENRE = "extra_genre"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,15 +84,15 @@ class HomeFragment : Fragment() {
 
         with(binding) {
             movieAdapter.onItemClick = {
-                movieAdapter.onItemClick = {
-                    startActivity(Intent(activity, MovieDetailsActivity::class.java).apply {
-                        putExtra(EXTRA_ID, it.id)
-                        putExtra(EXTRA_IMAGE, it.gambar)
-                        putExtra(EXTRA_NAMA, it.nama)
-                        putExtra(EXTRA_DIREKTOR, it.direktor)
-                        putExtra(EXTRA_STORY, it.storyline)
-                    })
-                }
+                startActivity(Intent(activity, MovieDetailsActivity::class.java).apply {
+                    putExtra(EXTRA_ID, it.id)
+                    putExtra(EXTRA_IMAGE, it.gambar)
+                    putExtra(EXTRA_NAMA, it.nama)
+                    putExtra(EXTRA_DIREKTOR, it.direktor)
+                    putExtra(EXTRA_RATING, it.rating.toString())
+                    putExtra(EXTRA_STORY, it.storyline)
+                    putExtra(EXTRA_GENRE, it.genre.toTypedArray())
+                })
             }
         }
     }
@@ -113,7 +115,7 @@ class HomeFragment : Fragment() {
                     document.getString("nama") ?: "",
                     document.getLong("rating")?.toInt() ?: 0,
                     document.getString("direktor") ?: "",
-                    document.getString("genre") ?: "",
+                    document.get("genre") as List<String>? ?: listOf(),
                     document.getString("storyline") ?: ""
                 )
                 movieList.add(movieData)

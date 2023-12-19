@@ -21,6 +21,7 @@ class MovieAddActivity : AppCompatActivity() {
         imageUri = it
         binding.addPosterMovie.setImageURI(it)
     }
+    private val selectedGenres = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +35,21 @@ class MovieAddActivity : AppCompatActivity() {
             }
 
             btnAddMovie.setOnClickListener {
+                if (gHorror.isChecked) selectedGenres.add("Horror")
+                if (gThriller.isChecked) selectedGenres.add("Thriller")
+                if (gAnimasi.isChecked) selectedGenres.add("Animasi")
+                if (gDokumenter.isChecked) selectedGenres.add("Dokumenter")
+                if (gKomedi.isChecked) selectedGenres.add("Komedi")
+                if (gAksi.isChecked) selectedGenres.add("Aksi")
+                if (gDrama.isChecked) selectedGenres.add("Drama")
+                if (gRomantis.isChecked) selectedGenres.add("Romantis")
+                if (gMisteri.isChecked) selectedGenres.add("Misteri")
+                if (gKeluarga.isChecked) selectedGenres.add("Keluarga")
+                if (gFiksiilmiah.isChecked) selectedGenres.add("Fiksi Ilmiah")
+                if (gPetualangan.isChecked) selectedGenres.add("Petualangan")
+                if (gFantasi.isChecked) selectedGenres.add("Fantasi")
+                if (gMusikal.isChecked) selectedGenres.add("Musikal")
+
                 val takeImage = imageCollectionRef.child(System.currentTimeMillis().toString()) // Memberikan nama unik pada gambar yang diupload berupa angka waktu
                 imageUri?.let { takeImage.putFile(it).addOnCompleteListener { task -> // Menyimpan gambar pada Firebase Storage
                     if (task.isSuccessful) { // Jika gambar sudah berhasil disimpan pada Firebase Storage, maka ...
@@ -43,9 +59,9 @@ class MovieAddActivity : AppCompatActivity() {
 
                             mapDocument["gambar"] = uri.toString()
                             mapDocument["nama"] = inputMovieTitle.text.toString()
-                            mapDocument["rating"] = 8
+                            mapDocument["rating"] = ratingSlider.value.toDouble() // Mengambil nilai dari Slider dan mengubahnya menjadi Double
                             mapDocument["direktor"] = inputMovieDir.text.toString()
-                            mapDocument["genre"] = "Genre Uji Coba"
+                            mapDocument["genre"] = selectedGenres
                             mapDocument["storyline"] = inputStoryLine.text.toString()
 
                             movieCollectionRef.add(mapDocument).addOnCompleteListener { firestoreTask ->
@@ -66,6 +82,8 @@ class MovieAddActivity : AppCompatActivity() {
                         addPosterMovie.setImageResource(R.drawable.upload_image)
                     }
                 } }
+
+                startActivity(Intent(this@MovieAddActivity, HomeAdminActivity::class.java))
             }
 
             addPosterMovie.setOnClickListener {
