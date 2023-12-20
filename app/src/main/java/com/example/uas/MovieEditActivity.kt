@@ -60,6 +60,10 @@ class MovieEditActivity : AppCompatActivity() {
                 if (i == "Petualangan") gPetualangan.isChecked = true
                 if (i == "Fantasi") gFantasi.isChecked = true
                 if (i == "Musikal") gMusikal.isChecked = true
+                if (i == "Persahabatan") gPersahabatan.isChecked = true
+                if (i == "Biografi") gBiografi.isChecked = true
+                if (i == "Noir") gNoir.isChecked = true
+                if (i == "Dewasa") gDewasa.isChecked = true
             }
 
             btnSubmitMovie.setOnClickListener {
@@ -134,6 +138,10 @@ class MovieEditActivity : AppCompatActivity() {
             if (gPetualangan.isChecked) selectedGenres.add("Petualangan")
             if (gFantasi.isChecked) selectedGenres.add("Fantasi")
             if (gMusikal.isChecked) selectedGenres.add("Musikal")
+            if (gPersahabatan.isChecked) selectedGenres.add("Persahabatan")
+            if (gBiografi.isChecked) selectedGenres.add("Biografi")
+            if (gNoir.isChecked) selectedGenres.add("Noir")
+            if (gDewasa.isChecked) selectedGenres.add("Dewasa")
 
             // Memeriksa jika movie diupdate tanpa mengubah gambar
             if (imageUri == null) withOutImageUri(documentID)

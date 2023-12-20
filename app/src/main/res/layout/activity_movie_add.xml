@@ -368,13 +368,73 @@
                 app:buttonTint="@color/color3"
                 app:buttonIconTint="@color/white"/>
 
+            <CheckBox
+                android:id="@+id/g_persahabatan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/g_fantasi"
+                app:layout_constraintEnd_toStartOf="@id/g_romantis"
+                android:text="Persahabatan"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_biografi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                app:layout_constraintStart_toEndOf="@id/g_drama"
+                app:layout_constraintTop_toBottomOf="@id/g_musikal"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Biografi"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_noir"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/g_persahabatan"
+                app:layout_constraintEnd_toStartOf="@id/g_romantis"
+                android:text="Noir"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
+            <CheckBox
+                android:id="@+id/g_dewasa"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                app:layout_constraintStart_toEndOf="@id/g_drama"
+                app:layout_constraintTop_toBottomOf="@id/g_biografi"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Dewasa"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_regular"
+                app:buttonTint="@color/color3"
+                app:buttonIconTint="@color/white"/>
+
             <TextView
                 android:id="@+id/tv_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/g_fantasi"
+                app:layout_constraintTop_toBottomOf="@id/g_noir"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="Rating"
                 android:textSize="25sp"

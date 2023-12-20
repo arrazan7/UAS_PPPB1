@@ -10,7 +10,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.example.uas.databinding.ActivityMovieAddBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 
 class MovieAddActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMovieAddBinding
@@ -49,6 +48,10 @@ class MovieAddActivity : AppCompatActivity() {
                 if (gPetualangan.isChecked) selectedGenres.add("Petualangan")
                 if (gFantasi.isChecked) selectedGenres.add("Fantasi")
                 if (gMusikal.isChecked) selectedGenres.add("Musikal")
+                if (gPersahabatan.isChecked) selectedGenres.add("Persahabatan")
+                if (gBiografi.isChecked) selectedGenres.add("Biografi")
+                if (gNoir.isChecked) selectedGenres.add("Noir")
+                if (gDewasa.isChecked) selectedGenres.add("Dewasa")
 
                 val takeImage = imageCollectionRef.child(System.currentTimeMillis().toString()) // Memberikan nama unik pada gambar yang diupload berupa angka waktu
                 imageUri?.let { takeImage.putFile(it).addOnCompleteListener { task -> // Menyimpan gambar pada Firebase Storage

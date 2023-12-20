@@ -174,11 +174,50 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_genre"
                 app:layout_constraintEnd_toEndOf="@id/poster_movie"/>
 
+            <Button
+                android:id="@+id/btn_like"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="@id/poster_movie"
+                app:layout_constraintTop_toBottomOf="@id/genre_RV"
+                app:layout_constraintEnd_toEndOf="@id/poster_movie"
+                app:cornerRadius="15dp"
+                android:backgroundTint="@color/red"
+                android:drawableLeft="@drawable/baseline_favorite_24_2"
+                android:text="Like This !!!"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_bold"
+                android:visibility="visible"/>
+
+            <Button
+                android:id="@+id/btn_unlike"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="@id/poster_movie"
+                app:layout_constraintTop_toBottomOf="@id/genre_RV"
+                app:layout_constraintEnd_toEndOf="@id/poster_movie"
+                app:cornerRadius="15dp"
+                android:backgroundTint="@color/blue"
+                android:drawableLeft="@drawable/baseline_heart_broken_24"
+                android:text="Unlike This  :&#34;("
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_bold"
+                android:visibility="gone"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="@id/poster_movie"
-                app:layout_constraintTop_toBottomOf="@id/genre_RV"
+                app:layout_constraintTop_toBottomOf="@id/btn_like"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/poster_movie"
+                app:layout_constraintTop_toBottomOf="@id/btn_unlike"
                 android:textSize="25sp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

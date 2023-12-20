@@ -4,5 +4,6 @@ data class Users(
     var username: String = "",
     var email: String = "",
     var password: String = "",
-    var role: String = ""
+    var role: String = "",
+    var favorite: List<String>?
 )

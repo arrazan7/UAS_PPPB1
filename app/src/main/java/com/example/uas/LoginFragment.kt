@@ -30,8 +30,7 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var mainActivity: MainActivity
     private lateinit var prefManager: PrefManager
-    private val firestore = FirebaseFirestore.getInstance()
-    private val usersCollectionRef = firestore.collection("Users")
+    private val usersCollectionRef = FirebaseFirestore.getInstance().collection("Users")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

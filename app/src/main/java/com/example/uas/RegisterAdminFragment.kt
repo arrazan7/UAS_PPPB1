@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.uas.databinding.FragmentRegisterAdminBinding
-import com.example.uas.databinding.FragmentRegisterBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -85,7 +84,8 @@ class RegisterAdminFragment : Fragment() {
                                 username = savedUsername,
                                 email = savedEmail,
                                 password = savedPassword,
-                                role = "admin"
+                                role = "admin",
+                                favorite = emptyList()
                             )
                             addUser(newUser)
                         }
