@@ -1,6 +1,10 @@
 package com.example.uas
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +12,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationCompat
 import com.example.uas.databinding.ActivityMovieEditBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -77,6 +82,9 @@ class MovieEditActivity : AppCompatActivity() {
                 if (movieID != null) {
                     deleteMovieFromFirebase(movieID)
                 }
+                // Membuat Notifikasi
+                showNotifUpdateMovie(91, "Edit Movie", "Berhasil menghapus film $nama", gambarURL)
+
                 startActivity(Intent(this@MovieEditActivity, HomeAdminActivity::class.java))
             }
 
@@ -185,6 +193,9 @@ class MovieEditActivity : AppCompatActivity() {
                         movieCollectionRef.document(documentID).set(mapDocument).addOnCompleteListener { firestoreTask ->
                             if (firestoreTask.isSuccessful) {
                                 Toast.makeText(this@MovieEditActivity, "Movie Uploaded Successfully", Toast.LENGTH_SHORT).show()
+
+                                // Membuat Notifikasi
+                                showNotifUpdateMovie(91, "Edit Movie", "Berhasil mengedit film ${inputMovieTitle.text.toString()}", uri.toString())
                             } else {
                                 Toast.makeText(this@MovieEditActivity, firestoreTask.exception?.message, Toast.LENGTH_SHORT).show()
                             }
@@ -217,6 +228,9 @@ class MovieEditActivity : AppCompatActivity() {
             movieCollectionRef.document(documentID).set(mapDocument).addOnCompleteListener { firestoreTask ->
                 if (firestoreTask.isSuccessful) {
                     Toast.makeText(this@MovieEditActivity, "Movie Uploaded Successfully", Toast.LENGTH_SHORT).show()
+
+                    // Membuat Notifikasi
+                    showNotifUpdateMovie(91, "Edit Movie", "Berhasil mengedit film ${inputMovieTitle.text.toString()}", gambarURL)
                 } else {
                     Toast.makeText(this@MovieEditActivity, firestoreTask.exception?.message, Toast.LENGTH_SHORT).show()
                 }
@@ -227,6 +241,40 @@ class MovieEditActivity : AppCompatActivity() {
         }
     }
 
+    private fun showNotifUpdateMovie(notifID: Int, title: String, text: String, image: String) {
+        // Membuat Notifikasi
+        val channelId = "NOTIF_UPDATE_MOVIE"
+        val builder = NotificationCompat.Builder(this@MovieEditActivity, channelId)
+            .setSmallIcon(R.drawable.baseline_notifications_24)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        val notifManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Menggunakan Picasso untuk memuat gambar dari URL Firebase
+        val target = object : com.squareup.picasso.Target {
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                // Mengatur gambar yang diunduh ke pemberitahuan
+                builder.setStyle(NotificationCompat.BigPictureStyle().bigPicture(bitmap))
+                notifManager.notify(notifID, builder.build())
+                Log.d("Picasso", "Bitmap loaded successfully")
+            }
+
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+                // Menangani kegagalan memuat gambar
+                Log.e("Picasso", "Bitmap loading failed: ${e?.message}")
+            }
+
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                // Persiapan sebelum memuat gambar
+                Log.d("Picasso", "Preparing to load image")
+            }
+        }
+
+        // Memuat gambar dari URL menggunakan Picasso
+        Picasso.get().load(image).into(target)
+    }
 
     private fun resetForm() {
         with(binding){

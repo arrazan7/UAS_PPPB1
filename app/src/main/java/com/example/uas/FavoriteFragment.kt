@@ -109,45 +109,49 @@ class FavoriteFragment : Fragment() {
                 if (document.exists()) {
                     val storedFavorite = document.get("favorite") as MutableList<String>? ?: mutableListOf()
 
-                    // Dapatkan daftar ID film dari koleksi
+                    // Dapatkan daftar ID movie dari movieCollectionRef
                     movieCollectionRef.get()
                         .addOnSuccessListener { querySnapshotMovies ->
-                            // Filter nilai favorit yang tidak ada di koleksi film
-                            val invalidFavorites = storedFavorite.filter { id ->
-                                // Filter ID yang tidak ada di koleksi film
-                                !querySnapshotMovies.documents.any { it.id == id }
+                            // Filter ID movie pada storedFavorite
+                            val invalidFavorites = storedFavorite.filter { listIdMovie ->
+                                // dapatkan ID movie dari storedFavorite yang tidak dimiliki oleh movieCollectionRef.
+                                // Artinya, bisa jadi ID movie tersebut yang ada pada movieCollectionRef telah dihapus, sedangkan storedFavorite masih memiliki data ID movie tersebut.
+                                !querySnapshotMovies.documents.any { it.id == listIdMovie }
                             }
 
-                            // Jika ada nilai favorit yang tidak valid, hapus dari storedFavorite
+                            // Jika ada nilai favorit yang tidak valid(adanya list ID movie pada variabel invalidFavorite),
+                            // Maka list ID movie tersebut akan dihapus dari storedFavorite karena data ID movie itu sudah tidak ada lagi do movieCollectionRef.
                             if (invalidFavorites.isNotEmpty()) {
                                 storedFavorite.removeAll(invalidFavorites)
 
-                                // Perbarui nilai "favorite" di usersCollectionRef menggunakan fungsi updateFavorite()
+                                // Perbarui field "favorite" di dalam usersCollectionRef menggunakan fungsi updateFavorite()
                                 updateFavorite(storedFavorite)
                             }
 
-                            // Ambil data film untuk nilai favorit yang valid
-                            movieCollectionRef.whereIn(FieldPath.documentId(), storedFavorite).get()
-                                .addOnSuccessListener { querySnapshot ->
-                                    movieList.clear()
-                                    for (document in querySnapshot.documents) {
-                                        val movieData = MovieData(
-                                            document.id,
-                                            document.getString("gambar") ?: "",
-                                            document.getString("nama") ?: "",
-                                            document.getLong("rating")?.toInt() ?: 0,
-                                            document.getString("direktor") ?: "",
-                                            document.get("genre") as List<String>? ?: listOf(),
-                                            document.getString("storyline") ?: ""
-                                        )
-                                        movieList.add(movieData)
+                            if (storedFavorite.isNotEmpty()) {
+                            // Ambil data-data movie berdasarkan storedFavorite yang telah difilter dan update sebelumnya.
+                                movieCollectionRef.whereIn(FieldPath.documentId(), storedFavorite).get()
+                                    .addOnSuccessListener { querySnapshot ->
+                                        movieList.clear()
+                                        for (document in querySnapshot.documents) {
+                                            val movieData = MovieData(
+                                                document.id,
+                                                document.getString("gambar") ?: "",
+                                                document.getString("nama") ?: "",
+                                                document.getLong("rating")?.toInt() ?: 0,
+                                                document.getString("direktor") ?: "",
+                                                document.get("genre") as List<String>? ?: listOf(),
+                                                document.getString("storyline") ?: ""
+                                            )
+                                            movieList.add(movieData)
+                                        }
+                                        movieAdapter.notifyDataSetChanged()
                                     }
-                                    movieAdapter.notifyDataSetChanged()
-                                }
-                                .addOnFailureListener { exception ->
-                                    Log.d("FavoriteFragment", "Error fetching movie data", exception)
-                                    Toast.makeText(activity, "Error fetching movie data", Toast.LENGTH_SHORT).show()
-                                }
+                                    .addOnFailureListener { exception ->
+                                        Log.d("FavoriteFragment", "Error fetching movie data", exception)
+                                        Toast.makeText(activity, "Error fetching movie data", Toast.LENGTH_SHORT).show()
+                                    }
+                            }
                         }
                         .addOnFailureListener { exception ->
                             Log.d("FavoriteFragment", "Error fetching movie collection data", exception)

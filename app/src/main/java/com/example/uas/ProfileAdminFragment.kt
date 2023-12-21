@@ -1,11 +1,14 @@
 package com.example.uas
 
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.NotificationCompat
 import com.example.uas.databinding.FragmentProfileAdminBinding
 import com.example.uas.databinding.FragmentProfileBinding
 
@@ -89,6 +92,31 @@ class ProfileAdminFragment : Fragment() {
             txtEmail.setText(email)
 
             btnLogout.setOnClickListener {
+                // Membuat Notifikasi
+                val channelId = "NOTIF_LOGOUT_ADMIN"
+                val builder = NotificationCompat.Builder(requireContext(), channelId)
+                    .setSmallIcon(R.drawable.baseline_notifications_24)
+                    .setContentTitle("Berhasil Logout")
+                    .setContentText("Terima kasih ${prefManager.getUsername()} karena telah menggunakan layanan kami.") // Isi pesan bebas
+                    .setAutoCancel(true)
+                val notifManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                    val notifChannel = NotificationChannel(
+//                        channelId, // Id channel
+//                        "Notifku", // Nama channel notifikasi
+//                        NotificationManager.IMPORTANCE_DEFAULT
+//                    )
+                    with(notifManager) {
+//                        createNotificationChannel(notifChannel)
+                        notify(4, builder.build())
+                    }
+                }
+                else {
+                    notifManager.notify(4, builder.build())
+                }
+
+                // Beralih Activity
                 homeAdminActivity.logOut()
             }
         }
