@@ -14,12 +14,21 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationCompat
 import com.example.uas.databinding.ActivityMovieAddBinding
+import com.example.uas.roomDatabase.MovieDao
+import com.example.uas.roomDatabase.MovieRoom
+import com.example.uas.roomDatabase.MovieRoomDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
+import java.io.File
+import java.io.FileOutputStream
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MovieAddActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMovieAddBinding
+    private lateinit var mMovieDao: MovieDao
+    private lateinit var executorService: ExecutorService
     private val imageCollectionRef = FirebaseStorage.getInstance().reference.child("Images")
     private val movieCollectionRef = FirebaseFirestore.getInstance().collection("Movies")
     private var imageUri: Uri? = null
@@ -33,6 +42,10 @@ class MovieAddActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMovieAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        executorService = Executors.newSingleThreadExecutor()
+        val movieRoomDb = MovieRoomDatabase.getDatabase(this@MovieAddActivity)
+        mMovieDao = movieRoomDb!!.movieDao()!!
 
         with(binding) {
             btnBack.setOnClickListener {
@@ -60,6 +73,7 @@ class MovieAddActivity : AppCompatActivity() {
                 if (gNoir.isChecked) selectedGenres.add("Noir")
                 if (gDewasa.isChecked) selectedGenres.add("Dewasa")
 
+                // MENAMBAH DATA MOVIE KE FIREBASE
                 val takeImage = imageCollectionRef.child(System.currentTimeMillis().toString()) // Memberikan nama unik pada gambar yang diupload berupa angka waktu
                 imageUri?.let { takeImage.putFile(it).addOnCompleteListener { task -> // Menyimpan gambar pada Firebase Storage
                     if (task.isSuccessful) { // Jika gambar sudah berhasil disimpan pada Firebase Storage, maka ...
@@ -76,6 +90,29 @@ class MovieAddActivity : AppCompatActivity() {
 
                             movieCollectionRef.add(mapDocument).addOnCompleteListener { firestoreTask ->
                                 if (firestoreTask.isSuccessful) {
+                                    // Memperoleh ID dokumen yang dihasilkan oleh Firestore
+                                    val newDocumentId = firestoreTask.result?.id
+                                    // Menyimpan gambar ke penyimpanan lokal
+                                    val fileName = System.currentTimeMillis().toString() + ".jpg"
+                                    val filePath = applicationContext.filesDir.absolutePath + File.separator + fileName
+                                    saveImageLocally(imageUri!!, filePath)
+                                    Log.d("Save Image with Room", "$filePath")
+                                    Log.d("Save Image with Room", "$fileName")
+
+                                    // MENAMBAH DATA MOVIE KE ROOM
+                                    insertRoom(
+                                        MovieRoom(
+                                            id = newDocumentId.toString(),
+                                            gambar = filePath, // Menggunakan jalur file lokal
+                                            nama = inputMovieTitle.text.toString(),
+                                            rating = ratingSlider.value.toDouble(),
+                                            direktor = inputMovieDir.text.toString(),
+                                            genre = mMovieDao.fromListToString(selectedGenres).toString(),
+                                            storyline = inputStoryLine.text.toString()
+                                        )
+                                    )
+
+
                                     Toast.makeText(this@MovieAddActivity, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
 
                                     // Membuat Notifikasi
@@ -152,6 +189,23 @@ class MovieAddActivity : AppCompatActivity() {
             inputMovieTitle.setText("")
             inputMovieDir.setText("")
             inputStoryLine.setText("") // Perlu ditambahkan checkbox dan slider nantinya
+        }
+    }
+
+    // Fungsi untuk menambah movie data ke Room
+    private fun insertRoom(movie: MovieRoom) {
+        executorService.execute {mMovieDao.insert(movie)}
+    }
+
+    // Fungsi untuk menyimpan gambar secara lokal
+    private fun saveImageLocally(uri: Uri, filePath: String) {
+        val inputStream = contentResolver.openInputStream(uri)
+        val outputStream = FileOutputStream(filePath)
+
+        inputStream?.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
         }
     }
 }

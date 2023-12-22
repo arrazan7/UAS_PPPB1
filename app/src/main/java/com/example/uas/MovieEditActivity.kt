@@ -4,7 +4,10 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,13 +16,24 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.Observer
+import androidx.room.InvalidationTracker
 import com.example.uas.databinding.ActivityMovieEditBinding
+import com.example.uas.roomDatabase.MovieDao
+import com.example.uas.roomDatabase.MovieRoom
+import com.example.uas.roomDatabase.MovieRoomDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
+import java.io.File
+import java.io.FileOutputStream
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MovieEditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMovieEditBinding
+    private lateinit var mMovieDao: MovieDao
+    private lateinit var executorService: ExecutorService
     private val imageCollectionRef = FirebaseStorage.getInstance().reference.child("Images")
     private val movieCollectionRef = FirebaseFirestore.getInstance().collection("Movies")
     private var imageUri: Uri? = null
@@ -35,57 +49,133 @@ class MovieEditActivity : AppCompatActivity() {
         binding = ActivityMovieEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        executorService = Executors.newSingleThreadExecutor()
+        val movieRoomDb = MovieRoomDatabase.getDatabase(this@MovieEditActivity)
+        mMovieDao = movieRoomDb!!.movieDao()!!
+
         with(binding) {
-            val id = intent.getStringExtra(HomeAdminFragment.EXTRA_ID)!!
-            gambarURL = intent.getStringExtra(HomeAdminFragment.EXTRA_IMAGE)!!
-            val nama = intent.getStringExtra(HomeAdminFragment.EXTRA_NAMA)
-            val direktor = intent.getStringExtra(HomeAdminFragment.EXTRA_DIREKTOR)
-            val story = intent.getStringExtra(HomeAdminFragment.EXTRA_STORY)
-            val rate = intent.getIntExtra(HomeAdminFragment.EXTRA_RATING, 0)
-            val genre = intent.getStringArrayExtra(HomeAdminFragment.EXTRA_GENRE) ?: emptyArray()
+            if (mMovieDao.isNetworkAvailable(this@MovieEditActivity)) {
+                val id = intent.getStringExtra(HomeAdminFragment.EXTRA_ID)!!
+                gambarURL = intent.getStringExtra(HomeAdminFragment.EXTRA_IMAGE)!!
+                val nama = intent.getStringExtra(HomeAdminFragment.EXTRA_NAMA)
+                val direktor = intent.getStringExtra(HomeAdminFragment.EXTRA_DIREKTOR)
+                val story = intent.getStringExtra(HomeAdminFragment.EXTRA_STORY)
+                val rate = intent.getIntExtra(HomeAdminFragment.EXTRA_RATING, 0)
+                val genre = intent.getStringArrayExtra(HomeAdminFragment.EXTRA_GENRE) ?: emptyArray()
 
-            Picasso.get().load(gambarURL).into(editPosterMovie)
-            inputMovieTitle.setText(nama)
-            inputMovieDir.setText(direktor)
-            inputStoryLine.setText(story)
-            ratingSlider.value = rate.toFloat()
+                Picasso.get().load(gambarURL).into(editPosterMovie)
+                inputMovieTitle.setText(nama)
+                inputMovieDir.setText(direktor)
+                inputStoryLine.setText(story)
+                ratingSlider.value = rate.toFloat()
 
-            for (i in genre) {
-                if (i == "Horror") gHorror.isChecked = true
-                if (i == "Thriller") gThriller.isChecked = true
-                if (i == "Animasi") gAnimasi.isChecked = true
-                if (i == "Dokumenter") gDokumenter.isChecked = true
-                if (i == "Komedi") gKomedi.isChecked = true
-                if (i == "Aksi") gAksi.isChecked = true
-                if (i == "Drama") gDrama.isChecked = true
-                if (i == "Romantis") gRomantis.isChecked = true
-                if (i == "Misteri") gMisteri.isChecked = true
-                if (i == "Keluarga") gKeluarga.isChecked = true
-                if (i == "Fiksi Ilmiah") gFiksiilmiah.isChecked = true
-                if (i == "Petualangan") gPetualangan.isChecked = true
-                if (i == "Fantasi") gFantasi.isChecked = true
-                if (i == "Musikal") gMusikal.isChecked = true
-                if (i == "Persahabatan") gPersahabatan.isChecked = true
-                if (i == "Biografi") gBiografi.isChecked = true
-                if (i == "Noir") gNoir.isChecked = true
-                if (i == "Dewasa") gDewasa.isChecked = true
-            }
-
-            btnSubmitMovie.setOnClickListener {
-                addMovieToFirebase(id)
-                startActivity(Intent(this@MovieEditActivity, HomeAdminActivity::class.java))
-            }
-
-            btnDeleteMovie.setOnClickListener {
-                deleteImageFromStorage(gambarURL)
-                val movieID = id?.let { it1 -> MovieData(id = it1, "","",null, "", listOf(""), "") }
-                if (movieID != null) {
-                    deleteMovieFromFirebase(movieID)
+                for (i in genre) {
+                    if (i == "Horror") gHorror.isChecked = true
+                    if (i == "Thriller") gThriller.isChecked = true
+                    if (i == "Animasi") gAnimasi.isChecked = true
+                    if (i == "Dokumenter") gDokumenter.isChecked = true
+                    if (i == "Komedi") gKomedi.isChecked = true
+                    if (i == "Aksi") gAksi.isChecked = true
+                    if (i == "Drama") gDrama.isChecked = true
+                    if (i == "Romantis") gRomantis.isChecked = true
+                    if (i == "Misteri") gMisteri.isChecked = true
+                    if (i == "Keluarga") gKeluarga.isChecked = true
+                    if (i == "Fiksi Ilmiah") gFiksiilmiah.isChecked = true
+                    if (i == "Petualangan") gPetualangan.isChecked = true
+                    if (i == "Fantasi") gFantasi.isChecked = true
+                    if (i == "Musikal") gMusikal.isChecked = true
+                    if (i == "Persahabatan") gPersahabatan.isChecked = true
+                    if (i == "Biografi") gBiografi.isChecked = true
+                    if (i == "Noir") gNoir.isChecked = true
+                    if (i == "Dewasa") gDewasa.isChecked = true
                 }
-                // Membuat Notifikasi
-                showNotifUpdateMovie(91, "Edit Movie", "Berhasil menghapus film $nama", gambarURL)
 
-                startActivity(Intent(this@MovieEditActivity, HomeAdminActivity::class.java))
+                btnSubmitMovie.setOnClickListener {
+                    // Memperbarui movie pada Firebasefirestore dan Room dengan fungsi
+                    addMovieToFirebase(id)
+
+                    startActivity(Intent(this@MovieEditActivity, HomeAdminActivity::class.java))
+                }
+
+                btnDeleteMovie.setOnClickListener {
+                    // Menghapus movie pada Firebasefirestore
+                    deleteImageFromStorage(gambarURL)
+                    val movieID = id?.let { it1 -> MovieData(id = it1, "","",null, "", listOf(""), "") }
+                    if (movieID != null) {
+                        deleteMovieFromFirebase(movieID)
+                    }
+
+                    // Menghapus movie pada Room
+                    val movieToDelete = MovieRoom(id = id, "", "", 0.0, "", "", "")
+                    deleteRoom(movieToDelete)
+
+                    // Membuat Notifikasi
+                    showNotifUpdateMovie(91, "Edit Movie", "Berhasil menghapus film $nama", gambarURL)
+
+                    startActivity(Intent(this@MovieEditActivity, HomeAdminActivity::class.java))
+                }
+            }
+
+
+            else {
+                val id_room = intent.getStringExtra(HomeAdminFragment.EXTRA_ROOM_ID)
+                val gambar_room = intent.getStringExtra(HomeAdminFragment.EXTRA_ROOM_IMAGE)
+                val nama_room = intent.getStringExtra(HomeAdminFragment.EXTRA_ROOM_NAMA)
+                val direktor_room = intent.getStringExtra(HomeAdminFragment.EXTRA_ROOM_DIREKTOR)
+                val story_room = intent.getStringExtra(HomeAdminFragment.EXTRA_ROOM_STORY)
+                val rate_room = intent.getIntExtra(HomeAdminFragment.EXTRA_ROOM_RATING, 0)
+                val genre_room = intent.getStringExtra(HomeAdminFragment.EXTRA_ROOM_GENRE)
+                val genre_room_list = mMovieDao.fromStringToList(genre_room)
+
+                tvEditmovie.setOnClickListener {
+                    Toast.makeText(this@MovieEditActivity, "$id_room $nama_room $direktor_room $rate_room $gambar_room", Toast.LENGTH_SHORT).show()
+                }
+                // Mendapatkan jalur gambar dari Room Database
+                val imagePath = gambar_room
+
+                // Memuat gambar dari jalur file ke dalam ShapeableImageView
+                val imageFile = File(imagePath)
+                if (imageFile.exists()) {
+                    val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+                    editPosterMovie.setImageBitmap(bitmap)
+                } else {
+                    // Gambar tidak ditemukan, mungkin hendak menampilkan gambar placeholder di sini
+                    editPosterMovie.setImageResource(R.drawable.upload_image)
+                }
+                inputMovieTitle.setText(nama_room)
+                inputMovieDir.setText(direktor_room)
+                inputStoryLine.setText(story_room)
+                ratingSlider.value = rate_room.toFloat()
+
+                if (genre_room_list != null) {
+                    for (i in genre_room_list) {
+                        if (i == "Horror") gHorror.isChecked = true
+                        if (i == "Thriller") gThriller.isChecked = true
+                        if (i == "Animasi") gAnimasi.isChecked = true
+                        if (i == "Dokumenter") gDokumenter.isChecked = true
+                        if (i == "Komedi") gKomedi.isChecked = true
+                        if (i == "Aksi") gAksi.isChecked = true
+                        if (i == "Drama") gDrama.isChecked = true
+                        if (i == "Romantis") gRomantis.isChecked = true
+                        if (i == "Misteri") gMisteri.isChecked = true
+                        if (i == "Keluarga") gKeluarga.isChecked = true
+                        if (i == "Fiksi Ilmiah") gFiksiilmiah.isChecked = true
+                        if (i == "Petualangan") gPetualangan.isChecked = true
+                        if (i == "Fantasi") gFantasi.isChecked = true
+                        if (i == "Musikal") gMusikal.isChecked = true
+                        if (i == "Persahabatan") gPersahabatan.isChecked = true
+                        if (i == "Biografi") gBiografi.isChecked = true
+                        if (i == "Noir") gNoir.isChecked = true
+                        if (i == "Dewasa") gDewasa.isChecked = true
+                    }
+                }
+
+                btnSubmitMovie.setOnClickListener {
+                    Toast.makeText(this@MovieEditActivity, "Tidak ada koneksi internet", Toast.LENGTH_SHORT).show()
+                }
+                btnDeleteMovie.setOnClickListener {
+                    Toast.makeText(this@MovieEditActivity, "Tidak ada koneksi internet", Toast.LENGTH_SHORT).show()
+                }
             }
 
             editPosterMovie.setOnClickListener {
@@ -199,9 +289,34 @@ class MovieEditActivity : AppCompatActivity() {
                             } else {
                                 Toast.makeText(this@MovieEditActivity, firestoreTask.exception?.message, Toast.LENGTH_SHORT).show()
                             }
-                            resetForm()
-                            editPosterMovie.setImageResource(R.drawable.upload_image)
                         }
+
+                        // Mengupdate data movie pada Room
+                        val gambar_room_lama = mMovieDao.getGambarById(documentID)
+                        gambar_room_lama.observe(this@MovieEditActivity,
+                            Observer { alamat ->
+                                // Menghapus gambar dari penyimpanan lokal
+                                deleteImageLocally(alamat ?: "")
+                                Log.d("Delete Image with Room", "$alamat")
+                            })
+
+                        val fileName = System.currentTimeMillis().toString() + ".jpg"
+                        val filePath = applicationContext.filesDir.absolutePath + File.separator + fileName
+                        saveImageLocally(imageUri!!, filePath)
+                        Log.d("Save Image with Room", "$filePath")
+                        Log.d("Save Image with Room", "$fileName")
+                        Log.d("Save Image with Room", "$gambar_room_lama")
+                        updateRoom(
+                            MovieRoom(
+                                id = documentID,
+                                gambar = filePath,
+                                nama = inputMovieTitle.text.toString(),
+                                rating = ratingSlider.value.toDouble(),
+                                direktor = inputMovieDir.text.toString(),
+                                genre = mMovieDao.fromListToString(selectedGenres).toString(),
+                                storyline = inputStoryLine.text.toString()
+                            )
+                        )
                     }
                     progressBar.visibility = View.GONE
                 }
@@ -234,8 +349,23 @@ class MovieEditActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(this@MovieEditActivity, firestoreTask.exception?.message, Toast.LENGTH_SHORT).show()
                 }
-                resetForm()
-                editPosterMovie.setImageResource(R.drawable.upload_image)
+
+                // Mengupdate data movie pada Room
+                val gambar_room_lama = mMovieDao.getGambarById(documentID)
+                gambar_room_lama.observe(this@MovieEditActivity) { gambarPath ->
+                    val gambarPathNonNull = gambarPath ?: "" // Jika gambarPath null, atur menjadi string kosong
+                    updateRoom(
+                        MovieRoom(
+                            id = documentID,
+                            gambar = gambarPathNonNull,
+                            nama = inputMovieTitle.text.toString(),
+                            rating = ratingSlider.value.toDouble(),
+                            direktor = inputMovieDir.text.toString(),
+                            genre = mMovieDao.fromListToString(selectedGenres).toString(),
+                            storyline = inputStoryLine.text.toString()
+                        )
+                    )
+                }
             }
             progressBar.visibility = View.GONE
         }
@@ -281,6 +411,34 @@ class MovieEditActivity : AppCompatActivity() {
             inputMovieTitle.setText("")
             inputMovieDir.setText("")
             inputStoryLine.setText("") // Perlu ditambahkan checkbox dan slider nantinya
+        }
+    }
+
+    private fun updateRoom(movie: MovieRoom) {
+        executorService.execute {mMovieDao.update(movie)}
+    }
+    private fun deleteRoom(movie: MovieRoom) {
+        executorService.execute {mMovieDao.delete(movie)}
+    }
+
+    private fun deleteImageLocally(filePath: String) {
+        val imageFile = File(filePath)
+        if (imageFile.exists()) {
+            imageFile.delete()
+            Log.d("MovieEditActivity", "Image deleted successfully: $filePath")
+        } else {
+            Log.e("MovieEditActivity", "Image not found: $filePath")
+        }
+    }
+
+    private fun saveImageLocally(uri: Uri, filePath: String) {
+        val inputStream = contentResolver.openInputStream(uri)
+        val outputStream = FileOutputStream(filePath)
+
+        inputStream?.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
         }
     }
 }

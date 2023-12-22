@@ -1,15 +1,24 @@
 package com.example.uas
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.uas.databinding.FragmentHomeBinding
+import com.example.uas.roomDatabase.MovieDao
+import com.example.uas.roomDatabase.MovieRoom
+import com.example.uas.roomDatabase.MovieRoomAdapter
+import com.example.uas.roomDatabase.MovieRoomDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,9 +36,14 @@ class HomeFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var homeUserActivity: HomeUserActivity
     private lateinit var movieAdapter: MovieAdapter
+    private lateinit var movieRoomAdapter: MovieRoomAdapter
+    private lateinit var mMovieDao: MovieDao
+    private lateinit var executorService: ExecutorService
     private val movieCollectionRef = FirebaseFirestore.getInstance().collection("Movies")
     private var movieList = ArrayList<MovieData>()
+    private var movieRoomList = ArrayList<MovieRoom>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,25 +85,71 @@ class HomeFragment : Fragment() {
         const val EXTRA_RATING = "extra_rating"
         const val EXTRA_STORY = "ektra_story"
         const val EXTRA_GENRE = "extra_genre"
+
+        const val EXTRA_ROOM_ID = "extra_room_id"
+        const val EXTRA_ROOM_IMAGE = "extra_room_image"
+        const val EXTRA_ROOM_NAMA = "extra_room_nama"
+        const val EXTRA_ROOM_DIREKTOR = "extra_room_direktur"
+        const val EXTRA_ROOM_STORY = "ektra_room_story"
+        const val EXTRA_ROOM_RATING = "ektra_room_rating"
+        const val EXTRA_ROOM_GENRE = "extra_room_genre"
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // Inisialisasi homeUserActivity saat Fragment terhubung dengan Activity
+        if (context is HomeUserActivity) {
+            homeUserActivity = context
+        } else {
+            throw IllegalStateException("Activity harus merupakan instance dari MainActivity")
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
 
-        initVars()
-        getImages()
+        executorService = Executors.newSingleThreadExecutor()
+        val movieRoomDb = MovieRoomDatabase.getDatabase(requireContext())
+        mMovieDao = movieRoomDb!!.movieDao()!!
 
-        with(binding) {
+        initVars()
+
+        if (mMovieDao.isNetworkAvailable(requireContext())) {
+            // Kode untuk aksi yang akan diambil jika ada koneksi internet
+            Toast.makeText(activity, "Koneksi internet tersedia.", Toast.LENGTH_SHORT).show()
+            movieAdapter = MovieAdapter(movieList)
+            binding.layoutRV.adapter = movieAdapter
+            getImages()
+
             movieAdapter.onItemClick = {
                 startActivity(Intent(activity, MovieDetailsActivity::class.java).apply {
                     putExtra(EXTRA_ID, it.id)
                     putExtra(EXTRA_IMAGE, it.gambar)
                     putExtra(EXTRA_NAMA, it.nama)
                     putExtra(EXTRA_DIREKTOR, it.direktor)
-                    putExtra(EXTRA_RATING, it.rating.toString())
                     putExtra(EXTRA_STORY, it.storyline)
+                    putExtra(EXTRA_RATING, it.rating)
                     putExtra(EXTRA_GENRE, it.genre.toTypedArray())
+                })
+            }
+        }
+        else {
+            // Kode untuk aksi yang akan diambil jika tidak ada koneksi internet
+            Toast.makeText(activity, "Tidak ada koneksi internet.", Toast.LENGTH_SHORT).show()
+            movieRoomAdapter = MovieRoomAdapter(movieRoomList)
+            binding.layoutRV.adapter = movieRoomAdapter
+            getImagesRoom()
+
+            movieRoomAdapter.onItemClick = {
+                startActivity(Intent(activity, MovieDetailsActivity::class.java).apply {
+                    putExtra(EXTRA_ROOM_ID, it.id)
+                    putExtra(EXTRA_ROOM_IMAGE, it.gambar)
+                    putExtra(EXTRA_ROOM_NAMA, it.nama)
+                    putExtra(EXTRA_ROOM_DIREKTOR, it.direktor)
+                    putExtra(EXTRA_ROOM_STORY, it.storyline)
+                    putExtra(EXTRA_ROOM_RATING, it.rating)
+                    putExtra(EXTRA_ROOM_GENRE, it.genre)
                 })
             }
         }
@@ -119,6 +179,16 @@ class HomeFragment : Fragment() {
                 movieList.add(movieData)
             }
             movieAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun getImagesRoom() {
+        mMovieDao.allMovies.observe(requireActivity()) {
+            movieRoomList.clear()
+            movieRoomList.addAll(it)
+            movieRoomAdapter.notifyDataSetChanged()
+
+            Log.d("HomeAdminActivity", "Number of movie: ${it.size}")
         }
     }
 }
