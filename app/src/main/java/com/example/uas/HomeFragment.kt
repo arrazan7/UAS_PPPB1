@@ -129,7 +129,7 @@ class HomeFragment : Fragment() {
                     putExtra(EXTRA_NAMA, it.nama)
                     putExtra(EXTRA_DIREKTOR, it.direktor)
                     putExtra(EXTRA_STORY, it.storyline)
-                    putExtra(EXTRA_RATING, it.rating)
+                    putExtra(EXTRA_RATING, it.rating.toString())
                     putExtra(EXTRA_GENRE, it.genre.toTypedArray())
                 })
             }

@@ -15,7 +15,7 @@ data class MovieRoom(
     @ColumnInfo(name = "nama")
     val nama: String,
     @ColumnInfo(name = "rating")
-    val rating: Double?,
+    val rating: Int,
     @ColumnInfo(name = "direktor")
     val direktor: String,
     @ColumnInfo(name = "genre")

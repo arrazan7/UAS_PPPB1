@@ -105,7 +105,7 @@ class MovieAddActivity : AppCompatActivity() {
                                             id = newDocumentId.toString(),
                                             gambar = filePath, // Menggunakan jalur file lokal
                                             nama = inputMovieTitle.text.toString(),
-                                            rating = ratingSlider.value.toDouble(),
+                                            rating = ratingSlider.value.toInt(),
                                             direktor = inputMovieDir.text.toString(),
                                             genre = mMovieDao.fromListToString(selectedGenres).toString(),
                                             storyline = inputStoryLine.text.toString()

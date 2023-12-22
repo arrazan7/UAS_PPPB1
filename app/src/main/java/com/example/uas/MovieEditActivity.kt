@@ -6,8 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -106,7 +104,7 @@ class MovieEditActivity : AppCompatActivity() {
                     }
 
                     // Menghapus movie pada Room
-                    val movieToDelete = MovieRoom(id = id, "", "", 0.0, "", "", "")
+                    val movieToDelete = MovieRoom(id = id, "", "", 0, "", "", "")
                     deleteRoom(movieToDelete)
 
                     // Membuat Notifikasi
@@ -311,7 +309,7 @@ class MovieEditActivity : AppCompatActivity() {
                                 id = documentID,
                                 gambar = filePath,
                                 nama = inputMovieTitle.text.toString(),
-                                rating = ratingSlider.value.toDouble(),
+                                rating = ratingSlider.value.toInt(),
                                 direktor = inputMovieDir.text.toString(),
                                 genre = mMovieDao.fromListToString(selectedGenres).toString(),
                                 storyline = inputStoryLine.text.toString()
@@ -359,7 +357,7 @@ class MovieEditActivity : AppCompatActivity() {
                             id = documentID,
                             gambar = gambarPathNonNull,
                             nama = inputMovieTitle.text.toString(),
-                            rating = ratingSlider.value.toDouble(),
+                            rating = ratingSlider.value.toInt(),
                             direktor = inputMovieDir.text.toString(),
                             genre = mMovieDao.fromListToString(selectedGenres).toString(),
                             storyline = inputStoryLine.text.toString()
